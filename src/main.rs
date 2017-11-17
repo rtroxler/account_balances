@@ -1,5 +1,6 @@
 extern crate chrono;
 use chrono::prelude::*;
+//use std::time::Duration;
 
 use std::fmt;
 
@@ -57,6 +58,11 @@ impl AccountBalance {
         //end
         let spd = self.amount.pennies / self.days_in_service_period();
         let leftover = self.amount.pennies % self.days_in_service_period();
+
+        //(0.self.days_in_service_period).map(
+        for day in 0..self.days_in_service_period() {
+            println!("{}", self.service_start_date + chrono::Duration::days(day as i64));
+        };
     }
 }
 
@@ -74,8 +80,9 @@ fn main() {
     println!("{:?}", rent_charge);
     println!("amount: {:?}", rent_charge.amount);
 
-    println!("{:?}", rent_charge.days_in_service_period());
+    //println!("{:?}", rent_charge.days_in_service_period());
 
     // Next:
     // Daily accrual it!
+    rent_charge.amount_per_day();
 }
