@@ -17,6 +17,12 @@ impl USD {
             pennies: pennies
         }
     }
+
+    pub fn from_pennies(pennies: u64) -> USD {
+        USD {
+            pennies: pennies
+        }
+    }
 }
 
 impl fmt::Debug for USD {
@@ -45,30 +51,25 @@ impl AccountBalance {
         (duration.to_std().unwrap().as_secs() / 86_400) + 1
     }
 
-    fn amount_per_day(&self) { //-> [(DateTime<Utc>, USD); 31] {
-        //pennies_per_day = pennies / days_in_period
-        //leftover_pennies = pennies % days_in_period
-        //(1..days_in_period).collect do
-        //  amount = pennies_per_day
-        //  if leftover_pennies > 0
-        //    amount += 1
-        //    leftover_pennies -= 1
-        //  end
-        //  negative ? -(amount / 100.0).to_d : (amount / 100.0).to_d
-        //end
+    fn amount_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
+        // TODO: Worry about negative numbers?
         let spd = self.amount.pennies / self.days_in_service_period();
-        let leftover = self.amount.pennies % self.days_in_service_period();
+        let mut leftover = self.amount.pennies % self.days_in_service_period();
 
-        //(0.self.days_in_service_period).map(
-        for day in 0..self.days_in_service_period() {
-            println!("{}", self.service_start_date + chrono::Duration::days(day as i64));
-        };
+        (0..self.days_in_service_period()).map(|day| {
+            let mut day_amount = spd;
+            if leftover > 0 {
+                day_amount += 1;
+                leftover -= 1;
+            }
+            (self.service_start_date + chrono::Duration::days(day as i64), USD::from_pennies(day_amount) )
+        }).collect()
     }
 }
 
 fn main() {
     let rent_charge = AccountBalance {
-        amount: USD::from_float(30.0),
+        amount: USD::from_float(33.01),
         account_code: String::from("1101"),
         effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
         service_start_date: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
@@ -76,13 +77,12 @@ fn main() {
         modifier: String::from("rent")
     };
 
-    println!("Hello, world!");
     println!("{:?}", rent_charge);
     println!("amount: {:?}", rent_charge.amount);
 
-    //println!("{:?}", rent_charge.days_in_service_period());
+    println!("{:?} days in service period\n", rent_charge.days_in_service_period());
 
     // Next:
     // Daily accrual it!
-    rent_charge.amount_per_day();
+    println!("{:?}", rent_charge.amount_per_day());
 }
