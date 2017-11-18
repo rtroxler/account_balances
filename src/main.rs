@@ -4,6 +4,8 @@ use chrono::prelude::*;
 mod usd;
 use usd::USD;
 
+mod general_ledger;
+
 #[derive(Debug)]
 struct Payment {
     assessment_id: i64,
@@ -23,9 +25,9 @@ struct Assessment {
 }
 
 impl Assessment {
-    fn days_in_service_period(&self) -> u64 {
+    fn days_in_service_period(&self) -> i64 {
         let duration = self.service_end_date.unwrap().signed_duration_since(self.service_start_date.unwrap());
-        (duration.to_std().unwrap().as_secs() / 86_400) + 1
+        (duration.to_std().unwrap().as_secs() / 86_400) as i64 + 1
     }
 
     fn amount_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
@@ -94,5 +96,9 @@ fn main() {
     account_balances.push(Box::new(rent_charge));
     account_balances.push(Box::new(payment));
     process(account_balances);
+
+    general_ledger::generate();
+
+
 }
 
