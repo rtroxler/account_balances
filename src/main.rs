@@ -5,7 +5,7 @@ mod usd;
 use usd::USD;
 
 #[derive(Debug)]
-struct Transaction {
+struct Payment {
     assessment_id: i64,
     amount: USD,
     account_code: String,
@@ -45,17 +45,17 @@ impl Assessment {
     }
 }
 
-trait AccountBalance {
+trait Transaction {
     fn process(&self);
 }
-impl AccountBalance for Transaction {
+impl Transaction for Payment {
     fn process(&self) {
         // We're a payment, pay for things
         println!("\tHere's a payment!");
         println!("Processing {:?}\n", self);
     }
 }
-impl AccountBalance for Assessment {
+impl Transaction for Assessment {
     fn process(&self) {
         // We're assessment (charge), write entries based on our account code
         println!("\tHere's our amount per day:");
@@ -63,7 +63,7 @@ impl AccountBalance for Assessment {
     }
 }
 
-fn process(account_balances: Vec<Box<AccountBalance>>) {
+fn process(account_balances: Vec<Box<Transaction>>) {
     for ab in account_balances.iter() {
         ab.process();
     }
@@ -79,7 +79,7 @@ fn main() {
         service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
     };
 
-    let payment = Transaction {
+    let payment = Payment {
         assessment_id: 1,
         amount: USD::from_float(30.0),
         account_code: String::from("1000"),
@@ -90,7 +90,7 @@ fn main() {
     // Daily accrual it!
     //println!("{:?}", rent_charge.amount_per_day());
 
-    let mut account_balances: Vec<Box<AccountBalance>> = Vec::new(); //vec!(rent_charge, payment);
+    let mut account_balances: Vec<Box<Transaction>> = Vec::new(); //vec!(rent_charge, payment);
     account_balances.push(Box::new(rent_charge));
     account_balances.push(Box::new(payment));
     process(account_balances);
