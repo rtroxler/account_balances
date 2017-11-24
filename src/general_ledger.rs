@@ -24,8 +24,10 @@ impl GeneralLedger {
         for (&(date, ref code), amount) in ordered {
             if amount.pennies > 0 {
                 println!("| {} | {} | {:?} |       |", date, code, amount);
-            } else {
+            } else if amount.pennies < 0 {
                 println!("| {} | {} |       | {:?} |", date, code, amount.inverse());
+            } else {
+                println!("| {} | {} |       |      |", date, code);
             }
         }
     }
