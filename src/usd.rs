@@ -1,5 +1,7 @@
+use std::ops;
 use std::fmt;
 
+#[derive(Copy, Clone)]
 pub struct USD {
     pub pennies: i64
 }
@@ -18,6 +20,28 @@ impl USD {
         USD {
             pennies: pennies
         }
+    }
+
+    pub fn inverse(&self) -> USD {
+        USD {
+            pennies: -self.pennies
+        }
+    }
+}
+
+impl ops::AddAssign for USD {
+    fn add_assign(&mut self, rhs: USD) {
+        *self = USD {
+            pennies: self.pennies + rhs.pennies
+        };
+    }
+}
+
+impl ops::SubAssign for USD {
+    fn sub_assign(&mut self, rhs: USD) {
+        *self = USD {
+            pennies: self.pennies - rhs.pennies
+        };
     }
 }
 
