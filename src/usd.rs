@@ -1,7 +1,8 @@
 use std::ops;
 use std::fmt;
+use std::cmp::Ordering;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq)]
 pub struct USD {
     pub pennies: i64
 }
@@ -32,6 +33,22 @@ impl USD {
         USD {
             pennies: -self.pennies
         }
+    }
+}
+
+impl PartialEq for USD {
+    fn eq(&self, other: &USD) -> bool {
+        self.pennies == other.pennies
+    }
+}
+impl Ord for USD {
+    fn cmp(&self, other: &USD) -> Ordering {
+        self.pennies.cmp(&other.pennies)
+    }
+}
+impl PartialOrd for USD {
+    fn partial_cmp(&self, other: &USD) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
