@@ -17,6 +17,7 @@ struct Payment {
     payee_service_start_date: Option<DateTime<Utc>>,
     payee_service_end_date: Option<DateTime<Utc>>,
     payee_effective_on: DateTime<Utc>,
+    payee_resolved_on: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug)]
@@ -30,10 +31,14 @@ struct Assessment {
 
 impl Assessment {
     fn days_in_service_period(&self) -> i64 {
+        // TODO: unwrap
         let duration = self.service_end_date.unwrap().signed_duration_since(self.service_start_date.unwrap());
         (duration.to_std().unwrap().as_secs() / 86_400) as i64 + 1
     }
 
+    // Do we take the closed on and if it's within this period roll it up?
+    // Or not even write it? Maybe this? Other account balances (write off, prorate, etc) would
+    // take care of the rest?
     fn amount_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
         // TODO: Worry about negative numbers at some point?
         let spd = self.amount.pennies / self.days_in_service_period();
@@ -78,9 +83,18 @@ impl Payment {
 trait Transaction {
     fn process(&self, gl: &mut GeneralLedger);
 }
+
 impl Transaction for Payment {
     fn process(&self, gl: &mut GeneralLedger) {
         // We're a payment, pay for things
+
+        // For Credits
+        if self.account_code == String::from("4501") {
+            match self.payee_resolved_on {
+                Some(_date) => println!("Payee is resolved! Do credit things"), // The entries for this might be weird when paired with a payment. But YOLO
+                None => return,
+            }
+        }
 
         // How much to A/R?
         let days_into_service_period = self.effective_on.signed_duration_since(self.payee_service_start_date.unwrap());
@@ -92,10 +106,10 @@ impl Transaction for Payment {
         }
         let (ar_days, leftover_days) = amounts.split_at(days_exclusive);
 
-        println!("AR DAYS: {:?}", ar_days);
+        //println!("AR DAYS: {:?}", ar_days);
 
         let creditable_ar = ar_days.iter().fold(USD::zero(), |sum, date_amount| sum + date_amount.1);
-        println!("AR to credit: {:?}", creditable_ar);
+        //println!("AR to credit: {:?}", creditable_ar);
 
         let (ar_to_credit, deferred_amount) = if self.amount >= creditable_ar {
             (creditable_ar, self.amount - creditable_ar)
@@ -110,7 +124,6 @@ impl Transaction for Payment {
         }
 
         let mut deferred_amount_mut = deferred_amount;
-        println!("HI");
         for &(date, amount) in leftover_days {
             if deferred_amount_mut == USD::zero() {
                 println!("Breaking out of loop");
@@ -138,7 +151,7 @@ impl Transaction for Assessment {
         for (date, amount) in self.amount_per_day() {
             gl.record_double_entry(date.date(),
                                    amount,
-                                   String::from("1001"), // A/R account code
+                                   String::from("1101"), // A/R account code
                                    self.account_code.clone());
         }
     }
@@ -170,7 +183,20 @@ fn main() {
         payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
         payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
         payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+        payee_resolved_on: None
     };
+
+    //let credit = Payment {
+        //amount: USD::from_float(20.5),
+        //account_code: String::from("4501"),
+        //effective_on: Utc.ymd(2017, 12, 2).and_hms(0,0,0),
+        //payee_amount: USD::from_float(30.0),
+        //payee_account_code: String::from("4000"),
+        //payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+        //payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+        //payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+        //payee_resolved_on: Some(Utc.ymd(2017,11,4).and_hms(0,0,0))
+    //};
     // TODO: Hella broke
     //let payment2 = Payment {
         //amount: USD::from_float(9.5),
@@ -183,15 +209,13 @@ fn main() {
         //payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
     //};
 
-    //// Next:
-    // Daily accrual it!
-    //println!("{:?}", rent_charge.amount_per_day());
     let mut gl = GeneralLedger::new();
 
     let mut account_balances: Vec<Box<Transaction>> = Vec::new();
     account_balances.push(Box::new(rent_charge));
     account_balances.push(Box::new(payment));
     //account_balances.push(Box::new(payment2));
+    //account_balances.push(Box::new(credit));
 
     // collect GL entries
     process(&mut gl, account_balances);
