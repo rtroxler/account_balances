@@ -1,6 +1,8 @@
 extern crate chrono;
 use chrono::prelude::*;
 
+mod account_map;
+
 mod usd;
 use usd::USD;
 
@@ -82,9 +84,15 @@ impl Payment {
 
 trait Transaction {
     fn process(&self, gl: &mut GeneralLedger);
+    fn process_daily_accrual(&self, gl: &mut GeneralLedger);
+    fn process_accrual(&self, gl: &mut GeneralLedger);
+    fn process_cash(&self, gl: &mut GeneralLedger);
 }
 
 impl Transaction for Payment {
+    fn process_daily_accrual(&self, gl: &mut GeneralLedger) {}
+    fn process_accrual(&self, gl: &mut GeneralLedger) {}
+    fn process_cash(&self, gl: &mut GeneralLedger) {}
     fn process(&self, gl: &mut GeneralLedger) {
         // We're a payment, pay for things
 
@@ -120,7 +128,7 @@ impl Transaction for Payment {
         gl.record_double_entry(self.effective_on.date(), ar_to_credit, self.account_code.clone(), String::from("1001"));
         // payment to deferred if applicable
         if deferred_amount > USD::zero() {
-            gl.record_double_entry(self.effective_on.date(), deferred_amount, self.account_code.clone(), String::from("2020"));
+            gl.record_double_entry(self.effective_on.date(), deferred_amount, self.account_code.clone(), account_map::deferred_code(&self.account_code));
         }
 
         let mut deferred_amount_mut = deferred_amount;
@@ -132,28 +140,51 @@ impl Transaction for Payment {
             if amount <= deferred_amount_mut {
                 gl.record_double_entry(date.date(),
                                         amount,
-                                        String::from("2020"), // Deferred code
-                                        String::from("1001")); // A/R account code
+                                        account_map::deferred_code(&self.account_code),
+                                        account_map::accounts_receivable_code(&self.account_code));
                 deferred_amount_mut -= amount;
             } else {
                 gl.record_double_entry(date.date(),
                                         deferred_amount_mut,
-                                        String::from("2020"), // Deferred code
-                                        String::from("1001")); // A/R account code
+                                        account_map::deferred_code(&self.account_code),
+                                        account_map::accounts_receivable_code(&self.account_code));
                 deferred_amount_mut = USD::zero();
             }
         }
     }
 }
+
 impl Transaction for Assessment {
     fn process(&self, gl: &mut GeneralLedger) {
+        // We're assessment (charge), write entries based on our account code
+        match self.account_code.as_str() {
+            "4000" => self.process_daily_accrual(gl),
+            "4050" => self.process_accrual(gl),
+            "4100" => self.process_cash(gl),
+            _ => println!("Fuck")
+        }
+    }
+
+    fn process_daily_accrual(&self, gl: &mut GeneralLedger) {
         // We're assessment (charge), write entries based on our account code
         for (date, amount) in self.amount_per_day() {
             gl.record_double_entry(date.date(),
                                    amount,
-                                   String::from("1101"), // A/R account code
+                                   account_map::accounts_receivable_code(&self.account_code),
                                    self.account_code.clone());
         }
+
+    }
+
+    fn process_accrual(&self, gl: &mut GeneralLedger) {
+        gl.record_double_entry(self.effective_on.date(),
+                               self.amount,
+                               account_map::accounts_receivable_code(&self.account_code),
+                               self.account_code.clone());
+    }
+
+    fn process_cash(&self, _gl: &mut GeneralLedger) {
+        // Do nothing
     }
 }
 
