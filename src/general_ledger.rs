@@ -34,13 +34,13 @@ impl GeneralLedger {
     }
 
     pub fn record_double_entry(&mut self, date: Date<Utc>, amount: USD,
-                           debit_account_code: String, credit_account_code: String) {
+                           debit_account_code: &String, credit_account_code: &String) {
         {
-            let debit = self.entries.entry((date, debit_account_code)).or_insert(USD::zero());
+            let debit = self.entries.entry((date, debit_account_code.clone())).or_insert(USD::zero());
             *debit += amount;
         }
         {
-            let credit = self.entries.entry((date, credit_account_code)).or_insert(USD::zero());
+            let credit = self.entries.entry((date, credit_account_code.clone())).or_insert(USD::zero());
             *credit -= amount;
         }
     }

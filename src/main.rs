@@ -90,9 +90,9 @@ trait Transaction {
 }
 
 impl Transaction for Payment {
-    fn process_daily_accrual(&self, gl: &mut GeneralLedger) {}
-    fn process_accrual(&self, gl: &mut GeneralLedger) {}
-    fn process_cash(&self, gl: &mut GeneralLedger) {}
+    fn process_daily_accrual(&self, _gl: &mut GeneralLedger) {}
+    fn process_accrual(&self, _gl: &mut GeneralLedger) {}
+    fn process_cash(&self, _gl: &mut GeneralLedger) {}
     fn process(&self, gl: &mut GeneralLedger) {
         // We're a payment, pay for things
 
@@ -114,8 +114,6 @@ impl Transaction for Payment {
         }
         let (ar_days, leftover_days) = amounts.split_at(days_exclusive);
 
-        //println!("AR DAYS: {:?}", ar_days);
-
         let creditable_ar = ar_days.iter().fold(USD::zero(), |sum, date_amount| sum + date_amount.1);
         //println!("AR to credit: {:?}", creditable_ar);
 
@@ -125,10 +123,10 @@ impl Transaction for Payment {
             (self.amount, USD::zero())
         };
         // payment to ar
-        gl.record_double_entry(self.effective_on.date(), ar_to_credit, self.account_code.clone(), String::from("1001"));
+        gl.record_double_entry(self.effective_on.date(), ar_to_credit, &self.account_code, &account_map::accounts_receivable_code(&self.payee_account_code));
         // payment to deferred if applicable
         if deferred_amount > USD::zero() {
-            gl.record_double_entry(self.effective_on.date(), deferred_amount, self.account_code.clone(), account_map::deferred_code(&self.account_code));
+            gl.record_double_entry(self.effective_on.date(), deferred_amount, &self.account_code, &account_map::deferred_code(&self.payee_account_code));
         }
 
         let mut deferred_amount_mut = deferred_amount;
@@ -140,14 +138,14 @@ impl Transaction for Payment {
             if amount <= deferred_amount_mut {
                 gl.record_double_entry(date.date(),
                                         amount,
-                                        account_map::deferred_code(&self.account_code),
-                                        account_map::accounts_receivable_code(&self.account_code));
+                                        &account_map::deferred_code(&self.payee_account_code),
+                                        &account_map::accounts_receivable_code(&self.payee_account_code));
                 deferred_amount_mut -= amount;
             } else {
                 gl.record_double_entry(date.date(),
                                         deferred_amount_mut,
-                                        account_map::deferred_code(&self.account_code),
-                                        account_map::accounts_receivable_code(&self.account_code));
+                                        &account_map::deferred_code(&self.payee_account_code),
+                                        &account_map::accounts_receivable_code(&self.payee_account_code));
                 deferred_amount_mut = USD::zero();
             }
         }
@@ -170,8 +168,8 @@ impl Transaction for Assessment {
         for (date, amount) in self.amount_per_day() {
             gl.record_double_entry(date.date(),
                                    amount,
-                                   account_map::accounts_receivable_code(&self.account_code),
-                                   self.account_code.clone());
+                                   &account_map::accounts_receivable_code(&self.account_code),
+                                   &self.account_code);
         }
 
     }
@@ -179,8 +177,8 @@ impl Transaction for Assessment {
     fn process_accrual(&self, gl: &mut GeneralLedger) {
         gl.record_double_entry(self.effective_on.date(),
                                self.amount,
-                               account_map::accounts_receivable_code(&self.account_code),
-                               self.account_code.clone());
+                               &account_map::accounts_receivable_code(&self.account_code),
+                               &self.account_code);
     }
 
     fn process_cash(&self, _gl: &mut GeneralLedger) {
@@ -208,7 +206,7 @@ fn main() {
     let payment = Payment {
         amount: USD::from_float(20.5),
         account_code: String::from("1000"),
-        effective_on: Utc.ymd(2017, 12, 2).and_hms(0,0,0),
+        effective_on: Utc.ymd(2017, 11, 2).and_hms(0,0,0),
         payee_amount: USD::from_float(30.0),
         payee_account_code: String::from("4000"),
         payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
@@ -238,6 +236,7 @@ fn main() {
         //payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
         //payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
         //payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+        //payee_resolved_on: None
     //};
 
     let mut gl = GeneralLedger::new();
@@ -273,6 +272,49 @@ fn test_rent_account_balance_accrues_daily() {
     let mut date_stepper = start;
     while date_stepper <= end {
         assert_eq!(gl.fetch_amount(date_stepper, String::from("1101")), Some(&USD::from_float(1.0)));
+        assert_eq!(gl.fetch_amount(date_stepper, String::from("4000")), Some(&USD::from_float(-1.0)));
+
+        date_stepper = date_stepper.checked_add_signed(chrono::Duration::days(1))
+            .expect("Overflow");
+    }
+}
+
+#[test]
+fn test_a_full_payment_against_rent() {
+    let mut gl = GeneralLedger::new();
+
+    let rent_charge = Assessment {
+        amount: USD::from_float(30.0),
+        account_code: String::from("4000"),
+        effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+        service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+        service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+    };
+
+    let payment = Payment {
+        amount: USD::from_float(30.0),
+        account_code: String::from("1000"),
+        effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+        payee_amount: USD::from_float(30.0),
+        payee_account_code: String::from("4000"),
+        payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+        payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+        payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+        payee_resolved_on: None
+    };
+
+    rent_charge.process(&mut gl);
+    payment.process(&mut gl);
+
+    assert_eq!(gl.fetch_amount(payment.effective_on.date(), String::from("1000")), Some(&USD::from_float(30.0)));
+    assert_eq!(gl.fetch_amount(payment.effective_on.date(), String::from("2020")), Some(&USD::from_float(-29.0)));
+    assert_eq!(gl.fetch_amount(payment.effective_on.date(), String::from("4000")), Some(&USD::from_float(-1.0)));
+
+    let start = rent_charge.service_start_date.unwrap().date();
+    let end = rent_charge.service_end_date.unwrap().date();
+    let mut date_stepper = start.checked_add_signed(chrono::Duration::days(1)).expect("Overflow");
+    while date_stepper <= end {
+        assert_eq!(gl.fetch_amount(date_stepper, String::from("2020")), Some(&USD::from_float(1.0)));
         assert_eq!(gl.fetch_amount(date_stepper, String::from("4000")), Some(&USD::from_float(-1.0)));
 
         date_stepper = date_stepper.checked_add_signed(chrono::Duration::days(1))
