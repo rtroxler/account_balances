@@ -83,17 +83,30 @@ impl Payment {
 }
 
 trait Transaction {
-    fn process(&self, gl: &mut GeneralLedger);
     fn process_daily_accrual(&self, gl: &mut GeneralLedger);
     fn process_accrual(&self, gl: &mut GeneralLedger);
     fn process_cash(&self, gl: &mut GeneralLedger);
+
+    fn account_code(&self) -> &str;
+    fn process(&self, gl: &mut GeneralLedger) {
+        // We're assessment (charge), write entries based on our account code
+        match self.account_code() {
+            "4000" => self.process_daily_accrual(gl),
+            "4050" => self.process_accrual(gl),
+            "4100" => self.process_cash(gl),
+            _ => println!("Fuck")
+        }
+    }
 }
 
 impl Transaction for Payment {
-    fn process_daily_accrual(&self, _gl: &mut GeneralLedger) {}
+    fn account_code(&self) -> &str {
+        self.payee_account_code.as_str()
+    }
+
     fn process_accrual(&self, _gl: &mut GeneralLedger) {}
     fn process_cash(&self, _gl: &mut GeneralLedger) {}
-    fn process(&self, gl: &mut GeneralLedger) {
+    fn process_daily_accrual(&self, gl: &mut GeneralLedger) {
         // We're a payment, pay for things
 
         // For Credits
@@ -153,14 +166,8 @@ impl Transaction for Payment {
 }
 
 impl Transaction for Assessment {
-    fn process(&self, gl: &mut GeneralLedger) {
-        // We're assessment (charge), write entries based on our account code
-        match self.account_code.as_str() {
-            "4000" => self.process_daily_accrual(gl),
-            "4050" => self.process_accrual(gl),
-            "4100" => self.process_cash(gl),
-            _ => println!("Fuck")
-        }
+    fn account_code(&self) -> &str {
+        self.account_code.as_str()
     }
 
     fn process_daily_accrual(&self, gl: &mut GeneralLedger) {
