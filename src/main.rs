@@ -31,44 +31,23 @@ struct Assessment {
     service_end_date: Option<DateTime<Utc>>,
 }
 
-impl Assessment {
-    fn days_in_service_period(&self) -> i64 {
-        // TODO: unwrap
-        let duration = self.service_end_date.unwrap().signed_duration_since(self.service_start_date.unwrap());
-        (duration.to_std().unwrap().as_secs() / 86_400) as i64 + 1
-    }
+trait StandardPerDiem {
+    fn payee_service_start_date(&self) -> Option<DateTime<Utc>>;
+    fn payee_service_end_date(&self) -> Option<DateTime<Utc>>;
+    fn payee_amount(&self) -> USD;
 
-    // Do we take the closed on and if it's within this period roll it up?
-    // Or not even write it? Maybe this? Other account balances (write off, prorate, etc) would
-    // take care of the rest?
-    fn amount_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
-        // TODO: Worry about negative numbers at some point?
-        let spd = self.amount.pennies / self.days_in_service_period();
-        let mut leftover = self.amount.pennies % self.days_in_service_period();
-
-        (0..self.days_in_service_period()).map(|day| {
-            let mut day_amount = spd;
-            if leftover > 0 {
-                day_amount += 1;
-                leftover -= 1;
-            }
-            (self.service_start_date.unwrap() + chrono::Duration::days(day as i64),
-             USD::from_pennies(day_amount) )
-        }).collect()
-    }
-}
-
-// Gross...
-impl Payment {
     fn days_in_payee_service_period(&self) -> i64 {
-        let duration = self.payee_service_end_date.unwrap().signed_duration_since(self.payee_service_start_date.unwrap());
+        let duration = self.payee_service_end_date().unwrap().signed_duration_since(self.payee_service_start_date().unwrap());
         (duration.to_std().unwrap().as_secs() / 86_400) as i64 + 1
     }
 
+    //// Do we take the closed on and if it's within this period roll it up?
+    //// Or not even write it? Maybe this? Other account balances (write off, prorate, etc) would
+    //// take care of the rest?
     fn payee_amount_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
         // TODO: Worry about negative numbers at some point?
-        let spd = self.payee_amount.pennies / self.days_in_payee_service_period();
-        let mut leftover = self.payee_amount.pennies % self.days_in_payee_service_period();
+        let spd = self.payee_amount().pennies / self.days_in_payee_service_period();
+        let mut leftover = self.payee_amount().pennies % self.days_in_payee_service_period();
 
         (0..self.days_in_payee_service_period()).map(|day| {
             let mut day_amount = spd;
@@ -76,11 +55,36 @@ impl Payment {
                 day_amount += 1;
                 leftover -= 1;
             }
-            (self.payee_service_start_date.unwrap() + chrono::Duration::days(day as i64),
+            (self.payee_service_start_date().unwrap() + chrono::Duration::days(day as i64),
              USD::from_pennies(day_amount) )
         }).collect()
     }
 }
+
+impl StandardPerDiem for Payment {
+    fn payee_service_start_date(&self) -> Option<DateTime<Utc>> {
+        self.payee_service_start_date
+    }
+    fn payee_service_end_date(&self) -> Option<DateTime<Utc>>  {
+        self.payee_service_end_date
+    }
+    fn payee_amount(&self) -> USD {
+        self.payee_amount
+    }
+}
+
+impl StandardPerDiem for Assessment {
+    fn payee_service_start_date(&self) -> Option<DateTime<Utc>> {
+        self.service_start_date
+    }
+    fn payee_service_end_date(&self) -> Option<DateTime<Utc>>  {
+        self.service_end_date
+    }
+    fn payee_amount(&self) -> USD {
+        self.amount
+    }
+}
+
 
 trait Transaction {
     fn process_daily_accrual(&self, gl: &mut GeneralLedger);
@@ -104,6 +108,7 @@ impl Transaction for Payment {
         self.payee_account_code.as_str()
     }
 
+    // TODO: these
     fn process_accrual(&self, _gl: &mut GeneralLedger) {}
     fn process_cash(&self, _gl: &mut GeneralLedger) {}
     fn process_daily_accrual(&self, gl: &mut GeneralLedger) {
@@ -172,7 +177,7 @@ impl Transaction for Assessment {
 
     fn process_daily_accrual(&self, gl: &mut GeneralLedger) {
         // We're assessment (charge), write entries based on our account code
-        for (date, amount) in self.amount_per_day() {
+        for (date, amount) in self.payee_amount_per_day() {
             gl.record_double_entry(date.date(),
                                    amount,
                                    &account_map::accounts_receivable_code(&self.account_code),
