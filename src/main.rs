@@ -3,8 +3,8 @@ use chrono::prelude::*;
 
 mod account_map;
 mod transaction;
-use transaction::Assessment;
-use transaction::Payment;
+
+use transaction::*;
 
 mod usd;
 use usd::USD;
@@ -31,8 +31,7 @@ mod intergration_tests {
         };
 
         let mut gl = GeneralLedger::new();
-        gl.process_assessment(&rent_charge);
-        //rent_charge.process(&mut gl);
+        rent_charge.process(&mut gl);
         let start = rent_charge.service_start_date.unwrap().date();
         let end = rent_charge.service_end_date.unwrap().date();
 
@@ -57,7 +56,7 @@ mod intergration_tests {
         };
 
         let mut gl = GeneralLedger::new();
-        gl.process_assessment(&fee_charge);
+        fee_charge.process(&mut gl);
 
         assert_eq!(gl.fetch_amount(fee_charge.effective_on.date(), String::from("1103")), Some(&USD::from_float(30.0)));
         assert_eq!(gl.fetch_amount(fee_charge.effective_on.date(), String::from("4050")), Some(&USD::from_float(-30.0)));
@@ -90,8 +89,8 @@ mod intergration_tests {
             payee_resolved_on: None
         };
 
-        gl.process_assessment(&rent_charge);
-        gl.process_payment(&payment);
+        rent_charge.process(&mut gl);
+        payment.process(&mut gl);
 
         assert_eq!(gl.fetch_amount(payment.effective_on.date(), String::from("1000")), Some(&USD::from_float(30.0)));
         assert_eq!(gl.fetch_amount(payment.effective_on.date(), String::from("2020")), Some(&USD::from_float(-29.0)));
@@ -145,9 +144,9 @@ mod intergration_tests {
             payee_resolved_on: None
         };
 
-        gl.process_assessment(&rent_charge);
-        gl.process_payment(&payment1);
-        gl.process_payment(&payment2);
+        rent_charge.process(&mut gl);
+        payment1.process(&mut gl);
+        payment2.process(&mut gl);
 
         gl.print();
 
