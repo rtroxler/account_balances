@@ -17,26 +17,58 @@ use general_ledger::GeneralLedger;
 
 #[derive(Debug)]
 pub struct Assessment {
-    pub amount: USD,
-    pub account_code: String,
+    amount: USD,
+    account_code: String,
     pub effective_on: DateTime<Utc>,
     pub service_start_date: Option<DateTime<Utc>>,
     pub service_end_date: Option<DateTime<Utc>>,
 }
 
+impl Assessment {
+    pub fn new(amount: USD, account_code: String, effective_on: DateTime<Utc>,
+               service_start_date: Option<DateTime<Utc>>, service_end_date: Option<DateTime<Utc>>) -> Assessment {
+        Assessment {
+            amount: amount,
+            account_code: account_code,
+            effective_on: effective_on,
+            service_start_date: service_start_date,
+            service_end_date: service_end_date
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct Payment {
-    pub amount: USD,
-    pub account_code: String,
+    amount: USD,
+    account_code: String,
     pub effective_on: DateTime<Utc>,
-    pub payee_amount: USD,
-    pub payee_account_code: String,
-    pub payee_service_start_date: Option<DateTime<Utc>>,
-    pub payee_service_end_date: Option<DateTime<Utc>>,
-    pub payee_effective_on: DateTime<Utc>,
-    pub payee_resolved_on: Option<DateTime<Utc>>,
-    //previously_paid_amount
+    payee_amount: USD,
+    payee_account_code: String,
+    payee_service_start_date: Option<DateTime<Utc>>,
+    payee_service_end_date: Option<DateTime<Utc>>,
+    payee_effective_on: DateTime<Utc>,
+    payee_resolved_on: Option<DateTime<Utc>>,
+    previously_paid_amount: USD,
     //payee_discount_amount
+}
+impl Payment {
+    pub fn new( amount: USD, account_code: String, effective_on: DateTime<Utc>, payee_amount: USD,
+                payee_account_code: String, payee_service_start_date: Option<DateTime<Utc>>,
+                payee_service_end_date: Option<DateTime<Utc>>, payee_effective_on: DateTime<Utc>,
+                payee_resolved_on: Option<DateTime<Utc>>, previously_paid_amount: USD) -> Payment {
+        Payment {
+            amount: amount,
+            account_code: account_code,
+            effective_on: effective_on,
+            payee_amount: payee_amount,
+            payee_account_code: payee_account_code,
+            payee_service_start_date: payee_service_start_date,
+            payee_service_end_date: payee_service_end_date,
+            payee_effective_on: payee_effective_on,
+            payee_resolved_on: payee_resolved_on,
+            previously_paid_amount: previously_paid_amount
+        }
+    }
 }
 //Void?
 //Do we need a credit transaction? Can it just be made a part of payee_discount_amount?

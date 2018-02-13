@@ -22,13 +22,13 @@ mod intergration_tests {
 
     #[test]
     fn test_rent_account_balance_accrues_daily() {
-        let rent_charge = Assessment {
-            amount: USD::from_float(30.0),
-            account_code: String::from("4000"),
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
-            service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
-        };
+        let rent_charge = Assessment::new(
+            USD::from_float(30.0),
+            String::from("4000"),
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+            Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+        );
 
         let mut gl = GeneralLedger::new();
         rent_charge.process(&mut gl);
@@ -47,13 +47,13 @@ mod intergration_tests {
 
     #[test]
     fn test_fee_account_balance_accrues_periodically() {
-        let fee_charge = Assessment {
-            amount: USD::from_float(30.0),
-            account_code: String::from("4050"), // Fee
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            service_start_date: None,
-            service_end_date: None,
-        };
+        let fee_charge = Assessment::new(
+            USD::from_float(30.0),
+            String::from("4050"), // Fee
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            None,
+            None,
+        );
 
         let mut gl = GeneralLedger::new();
         fee_charge.process(&mut gl);
@@ -69,25 +69,26 @@ mod intergration_tests {
     fn test_a_full_payment_against_rent() {
         let mut gl = GeneralLedger::new();
 
-        let rent_charge = Assessment {
-            amount: USD::from_float(30.0),
-            account_code: String::from("4000"),
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
-            service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
-        };
+        let rent_charge = Assessment::new(
+            USD::from_float(30.0),
+            String::from("4000"),
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+            Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+        );
 
-        let payment = Payment {
-            amount: USD::from_float(30.0),
-            account_code: String::from("1000"),
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            payee_amount: USD::from_float(30.0),
-            payee_account_code: String::from("4000"),
-            payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
-            payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
-            payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
-            payee_resolved_on: None
-        };
+        let payment = Payment::new(
+            USD::from_float(30.0),
+            String::from("1000"),
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            USD::from_float(30.0),
+            String::from("4000"),
+            Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+            Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+            Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+            None,
+            USD::from_float(0.0)
+        );
 
         rent_charge.process(&mut gl);
         payment.process(&mut gl);
@@ -109,46 +110,46 @@ mod intergration_tests {
     }
 
     #[test]
-    fn test_two_partial_payments_against_rent() {
+    fn test_two_even_partial_payments_against_rent() {
         let mut gl = GeneralLedger::new();
 
-        let rent_charge = Assessment {
-            amount: USD::from_float(30.0),
-            account_code: String::from("4000"),
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
-            service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
-        };
+        let rent_charge = Assessment::new(
+            USD::from_float(30.0),
+            String::from("4000"),
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+            Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+        );
 
-        let payment1 = Payment {
-            amount: USD::from_float(15.0),
-            account_code: String::from("1000"),
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            payee_amount: USD::from_float(30.0),
-            payee_account_code: String::from("4000"),
-            payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
-            payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
-            payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
-            payee_resolved_on: None
-        };
+        let payment1 = Payment::new(
+            USD::from_float(15.0),
+            String::from("1000"),
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            USD::from_float(30.0),
+            String::from("4000"),
+            Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+            Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+            Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+            None,
+            USD::from_float(0.0)
+        );
 
-        let payment2 = Payment {
-            amount: USD::from_float(15.0),
-            account_code: String::from("1000"),
-            effective_on: Utc.ymd(2017, 11, 1).and_hms(0,0,0),
-            payee_amount: USD::from_float(30.0),
-            payee_account_code: String::from("4000"),
-            payee_service_start_date: Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
-            payee_service_end_date: Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
-            payee_effective_on: Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
-            payee_resolved_on: None
-        };
+        let payment2 = Payment::new(
+            USD::from_float(15.0),
+            String::from("1000"),
+            Utc.ymd(2017, 11, 1).and_hms(0,0,0),
+            USD::from_float(30.0),
+            String::from("4000"),
+            Some(Utc.ymd(2017, 11, 1).and_hms(0,0,0)),
+            Some(Utc.ymd(2017, 11, 30).and_hms(0,0,0)),
+            Utc.ymd(2017,11,1).and_hms(0,0,0), // Is this needed?
+            None,
+            USD::from_float(15.0)
+        );
 
         rent_charge.process(&mut gl);
         payment1.process(&mut gl);
         payment2.process(&mut gl);
-
-        gl.print();
 
         assert_eq!(gl.fetch_amount(payment1.effective_on.date(), String::from("1000")), Some(&USD::from_float(30.0)));
         assert_eq!(gl.fetch_amount(payment1.effective_on.date(), String::from("2020")), Some(&USD::from_float(-29.0)));
