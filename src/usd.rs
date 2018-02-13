@@ -29,6 +29,10 @@ impl USD {
         }
     }
 
+    pub fn to_pennies(&self) -> i64 {
+        self.pennies
+    }
+
     pub fn inverse(&self) -> USD {
         USD {
             pennies: -self.pennies

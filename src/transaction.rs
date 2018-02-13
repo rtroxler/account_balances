@@ -79,6 +79,7 @@ pub trait Transaction {
     fn payee_service_end_date(&self) -> Option<DateTime<Utc>>;
     fn payee_amount(&self) -> USD;
     fn account_code(&self) -> &str;
+    fn previously_paid_amount(&self) -> USD;
 
     fn days_in_payee_service_period(&self) -> i64 {
         let duration = self.payee_service_end_date().unwrap().signed_duration_since(self.payee_service_start_date().unwrap());
@@ -88,10 +89,12 @@ pub trait Transaction {
     //// Do we take the closed on and if it's within this period roll it up?
     //// Or not even write it? Maybe this? Other account balances (write off, prorate, etc) would
     //// take care of the rest?
-    fn payee_amount_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
+    fn payable_amounts_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {
         // TODO: Worry about negative numbers at some point?
         let spd = self.payee_amount().pennies / self.days_in_payee_service_period();
         let mut leftover = self.payee_amount().pennies % self.days_in_payee_service_period();
+
+        let mut already_paid_amount = self.previously_paid_amount().to_pennies();
 
         (0..self.days_in_payee_service_period()).map(|day| {
             let mut day_amount = spd;
@@ -99,6 +102,17 @@ pub trait Transaction {
                 day_amount += 1;
                 leftover -= 1;
             }
+
+            if already_paid_amount > 0 {
+                if day_amount <= already_paid_amount {
+                    already_paid_amount -= day_amount;
+                    day_amount = 0;
+                } else {
+                    day_amount = already_paid_amount;
+                    already_paid_amount = 0;
+                }
+            }
+
             (self.payee_service_start_date().unwrap() + chrono::Duration::days(day as i64),
              USD::from_pennies(day_amount) )
         }).collect()
@@ -124,6 +138,9 @@ impl Transaction for Payment {
     fn account_code(&self) -> &str {
         self.payee_account_code.as_str()
     }
+    fn previously_paid_amount(&self) -> USD {
+        self.previously_paid_amount
+    }
     fn payee_service_start_date(&self) -> Option<DateTime<Utc>> {
         self.payee_service_start_date
     }
@@ -148,19 +165,25 @@ impl Transaction for Payment {
             }
         }
 
+        // TODO: Work previously paid in here
         // How much to A/R?
         let days_into_service_period = self.effective_on.signed_duration_since(self.payee_service_start_date.unwrap());
         let mut days_exclusive: usize = (days_into_service_period.to_std().unwrap().as_secs() / 86_400) as usize;
+        //println!("Days exclusive: {:?}", days_exclusive);
 
-        let amounts = self.payee_amount_per_day();
+        let amounts = self.payable_amounts_per_day();
+        //println!("{:?}", amounts);
         if days_exclusive > amounts.len() {
             days_exclusive = amounts.len();
         }
         let (ar_days, leftover_days) = amounts.split_at(days_exclusive);
+        //println!("A/R days: {:?}", ar_days);
+        //println!("Leftover days: {:?}", leftover_days);
 
         let creditable_ar = ar_days.iter().fold(USD::zero(), |sum, date_amount| sum + date_amount.1);
         //println!("AR to credit: {:?}", creditable_ar);
 
+        // IF I GET CREDITABLE_AR TO WORK WITH PREVIOUSLY PAID, DEFERRED SHOULD JUST WORK
         let (ar_to_credit, deferred_amount) = if self.amount >= creditable_ar {
             (creditable_ar, self.amount - creditable_ar)
         } else {
@@ -168,15 +191,17 @@ impl Transaction for Payment {
         };
         // payment to ar
         gl.record_double_entry(self.effective_on.date(), ar_to_credit, &self.account_code, &account_map::accounts_receivable_code(&self.payee_account_code));
+
         // payment to deferred if applicable
         if deferred_amount > USD::zero() {
+            //println!("Deferred amount {:?}", deferred_amount);
             gl.record_double_entry(self.effective_on.date(), deferred_amount, &self.account_code, &account_map::deferred_code(&self.payee_account_code));
         }
 
+        // Need to "eat" previously paid first.
         let mut deferred_amount_mut = deferred_amount;
         for &(date, amount) in leftover_days {
             if deferred_amount_mut == USD::zero() {
-                println!("Breaking out of loop");
                 break;
             }
             if amount <= deferred_amount_mut {
@@ -200,6 +225,9 @@ impl Transaction for Assessment {
     fn account_code(&self) -> &str {
         self.account_code.as_str()
     }
+    fn previously_paid_amount(&self) -> USD {
+        USD::zero()
+    }
     fn payee_service_start_date(&self) -> Option<DateTime<Utc>> {
         self.service_start_date
     }
@@ -212,7 +240,7 @@ impl Transaction for Assessment {
 
     fn process_daily_accrual(&self, gl: &mut GeneralLedger) {
         // We're assessment (charge), write entries based on our account code
-        for (date, amount) in self.payee_amount_per_day() {
+        for (date, amount) in self.payable_amounts_per_day() {
             gl.record_double_entry(date.date(),
                                    amount,
                                    &account_map::accounts_receivable_code(&self.account_code),
@@ -232,3 +260,5 @@ impl Transaction for Assessment {
         // Do nothing
     }
 }
+
+
