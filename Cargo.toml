@@ -1,5 +1,5 @@
 [package]
-name = "account_balances"
+name = "general_ledgers"
 version = "0.1.0"
 authors = ["Ryan Troxler <rtroxler@rednovalabs.com>"]
 

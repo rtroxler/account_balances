@@ -1,3 +1,5 @@
-# account_balances
+# general_ledge.rs
 
-Clone it and cargo run
+Create a General Ledger when given a set of transactions
+
+Clone it and cargo test to see it in action
