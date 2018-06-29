@@ -23,8 +23,8 @@ body{
       $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
       //$.getJSON("http://cors.io/spreadsheets.google.com/feeds/list/0AtMEoZDi5-pedElCS1lrVnp0Yk1vbFdPaUlOc3F3a2c/od6/public/values?alt=json", function(data) {
         //first row "title" column
-        var entries = data.feed.entries;
-        console.log(data.feed.entry[0]);
+        var entries = data.feed.entry;
+        //console.log(data.feed.entry[0]);
         var use_cases = entries[0]['gsx$count']['$t']
         var test_cases = entries[1]['gsx$count']['$t']
         var tests_passing = entries[2]['gsx$count']['$t']
