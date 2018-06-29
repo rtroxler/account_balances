@@ -23,7 +23,7 @@ body{
       $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
       //$.getJSON("http://cors.io/spreadsheets.google.com/feeds/list/0AtMEoZDi5-pedElCS1lrVnp0Yk1vbFdPaUlOc3F3a2c/od6/public/values?alt=json", function(data) {
         //first row "title" column
-        console.log(data.feed.entry[0]['gsx$title']['$t']);
+        console.log(data.feed);
       });
     </script>
   </body>
