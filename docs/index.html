@@ -21,6 +21,8 @@ body{
     Hi there
     <p>
     Use Cases: <span id="use-cases"></span>
+    Test Cases: <span id="test-cases"></span>
+    Tests Passing: <span id="tests-passing"></span>
     </p>
 
   </body>
@@ -32,7 +34,9 @@ body{
       var use_cases = entries[0]['gsx$count']['$t']
       $("#use-cases").text(use_cases);
       var test_cases = entries[1]['gsx$count']['$t']
+      $("#test-cases").text(test_cases);
       var tests_passing = entries[2]['gsx$count']['$t']
+      $("#tests-passing").text(tests_passing);
       var total = entries[3]['gsx$count']['$t']
 
       console.log(use_cases);
