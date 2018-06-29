@@ -19,6 +19,10 @@ body{
   </head>
   <body>
     Hi there
+    <p>
+    Use Cases: <span id="use-cases"></span>
+    </p>
+
   </body>
   <script id='script'>
     $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
@@ -26,6 +30,7 @@ body{
       var entries = data.feed.entry;
       console.log(entries);
       var use_cases = entries[0]['gsx$count']['$t']
+      $("#use-cases").text(use_cases);
       var test_cases = entries[1]['gsx$count']['$t']
       var tests_passing = entries[2]['gsx$count']['$t']
       var total = entries[3]['gsx$count']['$t']
