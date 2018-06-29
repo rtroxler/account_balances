@@ -4,3 +4,75 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+Assessment	src/transaction.rs	/^impl Assessment {$/;"	i
+Assessment	src/transaction.rs	/^pub struct Assessment {$/;"	s
+GeneralLedger	src/general_ledger.rs	/^impl GeneralLedger {$/;"	i
+GeneralLedger	src/general_ledger.rs	/^pub struct GeneralLedger { \/\/ By Day$/;"	s
+Ord for USD	src/usd.rs	/^impl Ord for USD {$/;"	i
+Output	src/usd.rs	/^    type Output = USD;$/;"	T
+PartialEq for USD	src/usd.rs	/^impl PartialEq for USD {$/;"	i
+PartialOrd for USD	src/usd.rs	/^impl PartialOrd for USD {$/;"	i
+Payment	src/transaction.rs	/^impl Payment {$/;"	i
+Payment	src/transaction.rs	/^pub struct Payment {$/;"	s
+Transaction	src/transaction.rs	/^pub trait Transaction {$/;"	t
+Transaction for Assessment	src/transaction.rs	/^impl Transaction for Assessment {$/;"	i
+Transaction for Payment	src/transaction.rs	/^impl Transaction for Payment {$/;"	i
+USD	src/usd.rs	/^impl USD {$/;"	i
+USD	src/usd.rs	/^pub struct USD {$/;"	s
+account_code	src/transaction.rs	/^    fn account_code(&self) -> &str {$/;"	f
+account_code	src/transaction.rs	/^    fn account_code(&self) -> &str;$/;"	f
+account_map	src/main.rs	/^mod account_map;$/;"	m
+accounts_receivable_code	src/account_map.rs	/^pub fn accounts_receivable_code(revenue_code: &str) -> String {$/;"	f
+add	src/usd.rs	/^    fn add(self, rhs: USD) -> USD {$/;"	f
+add_assign	src/usd.rs	/^    fn add_assign(&mut self, rhs: USD) {$/;"	f
+cmp	src/usd.rs	/^    fn cmp(&self, other: &USD) -> Ordering {$/;"	f
+days_in_payee_service_period	src/transaction.rs	/^    fn days_in_payee_service_period(&self) -> i64 {$/;"	f
+deferred_code	src/account_map.rs	/^pub fn deferred_code(revenue_code: &str) -> String {$/;"	f
+eq	src/usd.rs	/^    fn eq(&self, other: &USD) -> bool {$/;"	f
+fetch_amount	src/general_ledger.rs	/^    pub fn fetch_amount(&self, date: Date<Utc>, account_code: String) -> Option<&USD> {$/;"	f
+fmt	src/usd.rs	/^    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {$/;"	f
+fmt::Debug for USD	src/usd.rs	/^impl fmt::Debug for USD {$/;"	i
+from_float	src/usd.rs	/^    pub fn from_float(d: f64) -> USD {$/;"	f
+from_pennies	src/usd.rs	/^    pub fn from_pennies(pennies: i64) -> USD {$/;"	f
+general_ledger	src/main.rs	/^mod general_ledger;$/;"	m
+intergration_tests	src/main.rs	/^mod intergration_tests {$/;"	m
+inverse	src/usd.rs	/^    pub fn inverse(&self) -> USD {$/;"	f
+main	src/main.rs	/^fn main() {$/;"	f
+new	src/general_ledger.rs	/^    pub fn new() -> GeneralLedger {$/;"	f
+new	src/transaction.rs	/^    pub fn new( amount: USD, account_code: String, effective_on: DateTime<Utc>, payee_amount: USD,$/;"	f
+new	src/transaction.rs	/^    pub fn new(amount: USD, account_code: String, effective_on: DateTime<Utc>,$/;"	f
+ops::Add for USD	src/usd.rs	/^impl ops::Add for USD {$/;"	i
+ops::AddAssign for USD	src/usd.rs	/^impl ops::AddAssign for USD {$/;"	i
+ops::Sub for USD	src/usd.rs	/^impl ops::Sub for USD {$/;"	i
+ops::SubAssign for USD	src/usd.rs	/^impl ops::SubAssign for USD {$/;"	i
+partial_cmp	src/usd.rs	/^    fn partial_cmp(&self, other: &USD) -> Option<Ordering> {$/;"	f
+payable_amounts_per_day	src/transaction.rs	/^    fn payable_amounts_per_day(&self) -> Vec<(DateTime<Utc>, USD)> {$/;"	f
+payee_amount	src/transaction.rs	/^    fn payee_amount(&self) -> USD {$/;"	f
+payee_amount	src/transaction.rs	/^    fn payee_amount(&self) -> USD;$/;"	f
+payee_service_end_date	src/transaction.rs	/^    fn payee_service_end_date(&self) -> Option<DateTime<Utc>>  {$/;"	f
+payee_service_end_date	src/transaction.rs	/^    fn payee_service_end_date(&self) -> Option<DateTime<Utc>>;$/;"	f
+payee_service_start_date	src/transaction.rs	/^    fn payee_service_start_date(&self) -> Option<DateTime<Utc>> {$/;"	f
+payee_service_start_date	src/transaction.rs	/^    fn payee_service_start_date(&self) -> Option<DateTime<Utc>>;$/;"	f
+previously_paid_amount	src/transaction.rs	/^    fn previously_paid_amount(&self) -> USD {$/;"	f
+previously_paid_amount	src/transaction.rs	/^    fn previously_paid_amount(&self) -> USD;$/;"	f
+print	src/general_ledger.rs	/^    pub fn print(&self) {$/;"	f
+process	src/transaction.rs	/^    fn process(&self, gl: &mut GeneralLedger) {$/;"	f
+process_accrual	src/transaction.rs	/^    fn process_accrual(&self, _gl: &mut GeneralLedger) {}$/;"	f
+process_accrual	src/transaction.rs	/^    fn process_accrual(&self, gl: &mut GeneralLedger) {$/;"	f
+process_accrual	src/transaction.rs	/^    fn process_accrual(&self, gl: &mut GeneralLedger);$/;"	f
+process_cash	src/transaction.rs	/^    fn process_cash(&self, _gl: &mut GeneralLedger) {$/;"	f
+process_cash	src/transaction.rs	/^    fn process_cash(&self, _gl: &mut GeneralLedger) {}$/;"	f
+process_cash	src/transaction.rs	/^    fn process_cash(&self, gl: &mut GeneralLedger);$/;"	f
+process_daily_accrual	src/transaction.rs	/^    fn process_daily_accrual(&self, gl: &mut GeneralLedger) {$/;"	f
+process_daily_accrual	src/transaction.rs	/^    fn process_daily_accrual(&self, gl: &mut GeneralLedger);$/;"	f
+record_double_entry	src/general_ledger.rs	/^    pub fn record_double_entry(&mut self, date: Date<Utc>, amount: USD,$/;"	f
+sub	src/usd.rs	/^    fn sub(self, rhs: USD) -> USD {$/;"	f
+sub_assign	src/usd.rs	/^    fn sub_assign(&mut self, rhs: USD) {$/;"	f
+test_a_full_payment_against_rent	src/main.rs	/^    fn test_a_full_payment_against_rent() {$/;"	f
+test_fee_account_balance_accrues_periodically	src/main.rs	/^    fn test_fee_account_balance_accrues_periodically() {$/;"	f
+test_rent_account_balance_accrues_daily	src/main.rs	/^    fn test_rent_account_balance_accrues_daily() {$/;"	f
+test_two_even_partial_payments_against_rent	src/main.rs	/^    fn test_two_even_partial_payments_against_rent() {$/;"	f
+to_pennies	src/usd.rs	/^    pub fn to_pennies(&self) -> i64 {$/;"	f
+transaction	src/main.rs	/^mod transaction;$/;"	m
+usd	src/main.rs	/^mod usd;$/;"	m
+zero	src/usd.rs	/^    pub fn zero() -> USD {$/;"	f
