@@ -130,18 +130,25 @@
         test_pass_count = {};
         var i;
         for (i = 0; i < entries.length; i++) {
-          console.log(entries[i]);
           use_case_date = entries[i]['gsx$usecasewritten']['$t'];
           use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
+
           test_case_date = entries[i]['gsx$testcasewritten']['$t'];
           test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
+
           test_pass_date = entries[i]['gsx$testcasepassing']['$t'];
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
-        console.log({use_case_count});
-        console.log({test_case_count});
-        console.log({test_pass_count});
       });
+
+    var use_case_dps = [];
+    for (key in use_case_count.keys()) {
+      use_case_dps.push({
+        x: key,
+        y: use_case_count[key]
+      })
+    }
+    console.log(use_case_dps);
 
     // Charts
     var dps = []; // dataPoints
