@@ -48,11 +48,11 @@
       var i;
       for (i = 0; i < entries.length; i++) {
         console.log(entries[i]);
-        use_case_date = entries[i]['gsx$usecasewritten:']['$t'];
+        use_case_date = entries[i]['gsx$usecasewritten']['$t'];
         use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
-        test_case_date = entries[i]['gsx$testcasewritten:']['$t'];
+        test_case_date = entries[i]['gsx$testcasewritten']['$t'];
         test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
-        test_pass_date = entries[i]['gsx$testcasepassing:']['$t'];
+        test_pass_date = entries[i]['gsx$testcasepassing']['$t'];
         test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
       }
       for ( entry in entries ) {
