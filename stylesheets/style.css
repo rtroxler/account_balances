@@ -24,6 +24,10 @@
     margin-left: -250px;
 }
 
+#sidebarCollapse {
+  padding-left: 0px;
+}
+
 a[data-toggle="collapse"] {
     position: relative;
 }
