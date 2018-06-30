@@ -47,12 +47,13 @@
       test_case_count = {};
       test_pass_count = {};
       for ( entry in entries ) {
-        use_case_date = entry['gsx$usecasewritten:']['$t'];
-        use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
-        test_case_date = entry['gsx$testcasewritten:']['$t'];
-        test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
-        test_pass_date = entry['gsx$testcasepassing:']['$t'];
-        test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
+        console.log(entry);
+//        use_case_date = entry['gsx$usecasewritten:']['$t'];
+//        use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
+//        test_case_date = entry['gsx$testcasewritten:']['$t'];
+//        test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
+//        test_pass_date = entry['gsx$testcasepassing:']['$t'];
+//        test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
       }
       console.log({use_case_count});
       console.log({test_case_count});
