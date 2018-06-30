@@ -20,6 +20,10 @@
     min-height: 100vh;
 }
 
+ul {
+  list-style-type: none;
+}
+
 #sidebar.active {
     margin-left: -250px;
 }
