@@ -45,8 +45,8 @@ a[data-toggle="collapse"] {
   padding-left: 0px;
   /*font-weight: 200;*/
 
-  .grey-collapse {
-    colo: #ccc;
+  .btn-light:hover {
+    color: #ccc;
   }
 }
 
