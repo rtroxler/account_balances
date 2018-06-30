@@ -55,7 +55,7 @@ a[data-toggle="collapse"] {
 }
 
 .info-card {
-  margin: 10;
+  margin: 10 !important;
 }
 
 body {
