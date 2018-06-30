@@ -29,7 +29,6 @@
   </body>
   <script id='script'>
     $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
-      //first row "title" column
       var entries = data.feed.entry;
       console.log(entries);
 
@@ -46,6 +45,16 @@
       use_case_count = {};
       test_case_count = {};
       test_pass_count = {};
+      var i;
+      for (i = 0; i < entries.length; i++) {
+        console.log(entries[i]);
+        use_case_date = entries[i]['gsx$usecasewritten:']['$t'];
+        use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
+        test_case_date = entries[i]['gsx$testcasewritten:']['$t'];
+        test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
+        test_pass_date = entries[i]['gsx$testcasepassing:']['$t'];
+        test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
+      }
       for ( entry in entries ) {
         console.log(entry);
 //        use_case_date = entry['gsx$usecasewritten:']['$t'];
