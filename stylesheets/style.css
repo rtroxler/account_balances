@@ -24,12 +24,12 @@
     margin-left: -250px;
 }
 
-#sidebarCollapse {
-  padding-left: 0px;
-}
-
 a[data-toggle="collapse"] {
     position: relative;
+}
+
+.page-header {
+  padding-left: 0px;
 }
 
 .dropdown-toggle::after {
