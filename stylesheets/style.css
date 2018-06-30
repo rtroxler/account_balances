@@ -52,10 +52,10 @@ a[data-toggle="collapse"] {
 
 .page-content {
   padding-left: 20px;
+}
 
-  .info-card {
-    margin: 10;
-  }
+.info-card {
+  margin: 10;
 }
 
 body {
