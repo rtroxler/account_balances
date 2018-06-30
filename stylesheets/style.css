@@ -44,6 +44,10 @@ a[data-toggle="collapse"] {
   color: #ccc;
   padding-left: 0px;
   /*font-weight: 200;*/
+
+  .grey-collapse {
+    colo: #ccc;
+  }
 }
 
 .page-content {
