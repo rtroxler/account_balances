@@ -111,6 +111,9 @@
       });
 
 // Rip info from spreadsheet
+        use_case_count = {};
+        test_case_count = {};
+        test_pass_count = {};
       $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
         var entries = data.feed.entry;
         console.log(entries);
@@ -125,9 +128,6 @@
         var total = entries[3]['gsx$count']['$t']
         $("#total").text(total);
 
-        use_case_count = {};
-        test_case_count = {};
-        test_pass_count = {};
         var i;
         for (i = 0; i < entries.length; i++) {
           use_case_date = entries[i]['gsx$usecasewritten']['$t'];
