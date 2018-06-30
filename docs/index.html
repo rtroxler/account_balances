@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Status</title>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.4.4.min.js"></script>
-    <style>
-      body{
-        color: black;
-        font-size: .8em;
-        font-family: sans-serif;
-      }
-      h1,a{ color: blue}
-      input{
-        font-size: .8em;
-        background-color: black;
-        color:white;
-      }
-    </style>
+
+    <title>Hello, world!</title>
   </head>
   <body>
-    Hi there
+    <h1>Hello, world!</h1>
+
+  </body>
+</html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Status</title>
+  </head>
+  <body>
+    <h1>Hi there</h1>
     <p>
     Use Cases: <span id="use-cases"></span>
     Test Cases: <span id="test-cases"></span>
@@ -26,6 +29,11 @@
     Total: <span id="total"></span>
     </p>
 
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
   <script id='script'>
     $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
@@ -54,15 +62,6 @@
         test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
         test_pass_date = entries[i]['gsx$testcasepassing']['$t'];
         test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
-      }
-      for ( entry in entries ) {
-        console.log(entry);
-//        use_case_date = entry['gsx$usecasewritten:']['$t'];
-//        use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
-//        test_case_date = entry['gsx$testcasewritten:']['$t'];
-//        test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
-//        test_pass_date = entry['gsx$testcasepassing:']['$t'];
-//        test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
       }
       console.log({use_case_count});
       console.log({test_case_count});
