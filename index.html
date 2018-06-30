@@ -7,7 +7,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- Our Custom CSS -->
-		<link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
 
     <title>Status</title>
   </head>
@@ -74,8 +74,6 @@
                 <span>Toggle Sidebar</span>
               </button>
 
-
-              <h1>Hi there</h1>
               <p>
                 Use Cases: <span id="use-cases"></span>
                 Test Cases: <span id="test-cases"></span>
@@ -103,6 +101,10 @@
 
   <script id='script'>
   (function() {
+      $('#sidebarCollapse').on('click', function () {
+          $('#sidebar').toggleClass('active');
+      });
+
       $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
         var entries = data.feed.entry;
         console.log(entries);
