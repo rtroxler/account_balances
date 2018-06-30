@@ -24,12 +24,18 @@
     margin-left: -250px;
 }
 
+#content {
+  width: 100%
+}
+
 a[data-toggle="collapse"] {
     position: relative;
 }
 
 .page-header {
+  color: #ccc;
   padding-left: 0px;
+  font-weight: 200;
 }
 
 .dropdown-toggle::after {
