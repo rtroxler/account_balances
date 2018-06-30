@@ -20,12 +20,8 @@
 
       <!-- Sidebar -->
       <nav id="sidebar">
-        <div class="sidebar-header">
-          <h3>Abacus</h3>
-        </div>
-
         <ul class="list-unstyled components">
-          <!--<li>-->
+          <!--<li class="active">-->
             <!--<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>-->
             <!--<ul class="collapse list-unstyled" id="homeSubmenu">-->
               <!--<li>-->
@@ -39,33 +35,38 @@
               <!--</li>-->
             <!--</ul>-->
           <!--</li>-->
-          <li>
+          <li class="active">
             <a href="index.html">Dashboard</a>
           </li>
           <li>
             <a href="#">Use Cases</a>
           </li>
-          <li class="active">
+          <li>
             <a href="about.html">About Abacus</a>
           </li>
         </ul>
       </nav>
 
       <!-- Page Content -->
-      <div id="content">
-        <div id="content">
-          <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
+      <div id="content" class="page-container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid page-header">
 
-              <button type="button" id="sidebarCollapse" class="btn btn-light">
-                <i class="fas fa-align-left"></i>
-              </button>
+            <button type="button" id="sidebarCollapse" class="btn btn-light grey-collapse">
+              <i class="fa fa-bars"></i>
+            </button>
+            <h3 style="text-align: center;">ａｂａｃｕｓ<h3>
 
-              <h3>
-                This is where we talk about Abacus.
-              </h3>
-            </div>
-          </nav>
+          </div>
+        </nav>
+
+        <div class="container-fluid page-content">
+          <h4>
+            About Abacus
+          </h4>
+          <p>
+            This is where we talk about Abacus.
+          </p>
         </div>
       </div>
 
@@ -85,38 +86,6 @@
   (function() {
       $('#sidebarCollapse').click(function () {
           $('#sidebar').toggleClass('active');
-      });
-
-      $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
-        var entries = data.feed.entry;
-        console.log(entries);
-
-        // Pull totals
-        var use_cases = entries[0]['gsx$count']['$t']
-        $("#use-cases").text(use_cases);
-        var test_cases = entries[1]['gsx$count']['$t']
-        $("#test-cases").text(test_cases);
-        var tests_passing = entries[2]['gsx$count']['$t']
-        $("#tests-passing").text(tests_passing);
-        var total = entries[3]['gsx$count']['$t']
-        $("#total").text(total);
-
-        use_case_count = {};
-        test_case_count = {};
-        test_pass_count = {};
-        var i;
-        for (i = 0; i < entries.length; i++) {
-          console.log(entries[i]);
-          use_case_date = entries[i]['gsx$usecasewritten']['$t'];
-          use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
-          test_case_date = entries[i]['gsx$testcasewritten']['$t'];
-          test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
-          test_pass_date = entries[i]['gsx$testcasepassing']['$t'];
-          test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
-        }
-        console.log({use_case_count});
-        console.log({test_case_count});
-        console.log({test_pass_count});
       });
   })();
   </script>
