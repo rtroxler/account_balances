@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+
+    <title>Status</title>
+  </head>
+
+  <body>
+    <div class="wrapper">
+
+      <!-- Sidebar -->
+      <nav id="sidebar">
+        <div class="sidebar-header">
+          <h3>Abacus</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+          <li>
+            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+            <ul class="collapse list-unstyled" id="homeSubmenu">
+              <li>
+                <a href="#">Home 12</a>
+              </li>
+              <li>
+                <a href="#">Home 2</a>
+              </li>
+              <li>
+                <a href="#">Home 3</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">Use Cases</a>
+          </li>
+          <li class="active">
+            <a href="#">About Abacus</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Page Content -->
+      <div id="content">
+        <div id="content">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+
+              <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="fas fa-align-left"></i>
+                <span>Toggle Sidebar</span>
+              </button>
+
+              <h1>
+                This is where we talk about Abacus.
+              </h1>
+            </div>
+          </nav>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.4.4.min.js"></script>
+  </body>
+
+  <script id='script'>
+  (function() {
+      $('#sidebarCollapse').click(function () {
+          $('#sidebar').toggleClass('active');
+      });
+
+      $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
+        var entries = data.feed.entry;
+        console.log(entries);
+
+        // Pull totals
+        var use_cases = entries[0]['gsx$count']['$t']
+        $("#use-cases").text(use_cases);
+        var test_cases = entries[1]['gsx$count']['$t']
+        $("#test-cases").text(test_cases);
+        var tests_passing = entries[2]['gsx$count']['$t']
+        $("#tests-passing").text(tests_passing);
+        var total = entries[3]['gsx$count']['$t']
+        $("#total").text(total);
+
+        use_case_count = {};
+        test_case_count = {};
+        test_pass_count = {};
+        var i;
+        for (i = 0; i < entries.length; i++) {
+          console.log(entries[i]);
+          use_case_date = entries[i]['gsx$usecasewritten']['$t'];
+          use_case_count[use_case_date] = use_case_count[use_case_date] ? use_case_count[use_case_date] + 1 : 1;
+          test_case_date = entries[i]['gsx$testcasewritten']['$t'];
+          test_case_count[test_case_date] = test_case_count[test_case_date] ? test_case_count[test_case_date] + 1 : 1;
+          test_pass_date = entries[i]['gsx$testcasepassing']['$t'];
+          test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
+        }
+        console.log({use_case_count});
+        console.log({test_case_count});
+        console.log({test_pass_count});
+      });
+  })();
+  </script>
+</html>
