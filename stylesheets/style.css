@@ -24,18 +24,8 @@
     margin-left: -250px;
 }
 
-.page-content {
-  width: 100%
-}
-
 a[data-toggle="collapse"] {
     position: relative;
-}
-
-.page-header {
-  color: #ccc;
-  padding-left: 0px;
-  font-weight: 200;
 }
 
 .dropdown-toggle::after {
@@ -44,6 +34,20 @@ a[data-toggle="collapse"] {
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
+}
+
+.page-container {
+  width: 100%
+}
+
+.page-header {
+  color: #ccc;
+  padding-left: 0px;
+  /*font-weight: 200;*/
+}
+
+.page-content {
+  padding-left: 20px;
 }
 
 body {
