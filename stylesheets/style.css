@@ -7,7 +7,7 @@
 
 @media (max-width: 768px) {
     #sidebar {
-        margin-left: -175;
+        margin-left: -175px;
     }
     #sidebar.active {
         margin-left: 0;
