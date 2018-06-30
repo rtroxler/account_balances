@@ -12,6 +12,7 @@
     <!-- Font Awesome JS -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
     <title>Abacus</title>
   </head>
 
@@ -60,33 +61,36 @@
           </div>
         </nav>
         <div class="container-fluid page-content">
+          <div class="container">
+            <div class="row">
+              <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Status</h5>
+                  <h6 class="card-subtitle mb-2 text-muted">Total Use Case Count: <span id="total"></span></h6>
+                  <p class="card-text">
+                    <ul class="list-unstyled">
+                      <li>
+                        Use Cases Written: <span id="use-cases"></span>
+                      </li>
+                      <li>
+                        Test Cases Written: <span id="test-cases"></span>
+                      </li>
+                      <li>
+                        Tests Passing: <span id="tests-passing"></span>
+                      </li>
+                    </ul>
+                  </p>
+                </div>
+              </div>
 
-          <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Status</h5>
-              <h6 class="card-subtitle mb-2 text-muted">Total Use Case Count: <span id="total"></span></h6>
-              <p class="card-text">
-                <ul class="list-unstyled">
-                  <li>
-                    Use Cases Written: <span id="use-cases"></span>
-                  </li>
-                  <li>
-                    Test Cases Written: <span id="test-cases"></span>
-                  </li>
-                  <li>
-                    Tests Passing: <span id="tests-passing"></span>
-                  </li>
-                </ul>
-              </p>
-            </div>
-          </div>
-
-          <div class="card" style="width: 18rem;">
-            <div class="card-body">
-              <h5 class="card-title">Current Focus</h5>
-              <p class="card-text">
-                The current focus is on implementing "Discount Expense" credits for Cubesmart.
-              </p>
+              <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Current Focus</h5>
+                  <p class="card-text">
+                    The current focus is on implementing "Discount Expense" credits for Cubesmart.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -103,6 +107,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
   </body>
 
   <script id='script'>
