@@ -101,11 +101,9 @@
 
     <!-- More jQuery, and Chart.js-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.4.4.min.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-
-
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
   </body>
 
   <script id='script'>
@@ -147,19 +145,16 @@
         var use_case_sum = 0;
         var use_case_data = Object.keys(use_case_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
           use_case_sum += use_case_count[key];
-        console.log('use case sum' + use_case_sum);
           return [Date.parse(key), use_case_sum];
         });
         var test_case_sum = 0;
         var test_case_data = Object.keys(test_case_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
           test_case_sum += test_case_count[key];
-        console.log('test case sum' + test_case_sum);
           return [Date.parse(key), test_case_sum];
         });
         var test_pass_sum = 0;
         var test_pass_data = Object.keys(test_pass_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
           test_pass_sum += test_pass_count[key];
-        console.log('test pass sum' + test_pass_sum);
           return [Date.parse(key), test_pass_sum];
         });
 
@@ -187,7 +182,8 @@
                 title: {
                     text: 'Number completed'
                 },
-                min: 0
+                min: 0,
+                max: 250
             },
             tooltip: {
                 headerFormat: '<b>{series.name}</b><br>',
