@@ -115,6 +115,7 @@
       test_pass_count = {};
       $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
         var entries = data.feed.entry;
+        console.log(entries);
 
         // Pull totals/%
         var use_cases = entries[0]['gsx$count']['$t']
