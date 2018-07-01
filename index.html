@@ -150,20 +150,23 @@
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
 
+        var dates = Object.keys(use_case_count) + Object.keys(test_case_count) + Object.keys(test_pass_count);
+        unique_sorted_dates = dates.filter(Boolean).filter(function(x, i, a) { return a.indexOf(x) == i }).sort(function(a,b){ return new Date(a) - new Date(b); });
+
         // Sum them up
         var use_case_sum = 0;
-        var use_case_data = Object.keys(use_case_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
-          use_case_sum += use_case_count[key];
+        var use_case_data = unique_sorted_dates.map(function(key) {
+          use_case_sum += use_case_count[key] || 0;
           return [Date.parse(key), use_case_sum];
         });
         var test_case_sum = 0;
-        var test_case_data = Object.keys(test_case_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
-          test_case_sum += test_case_count[key];
+        var test_case_data = unique_sorted_dates.map(function(key) {
+          test_case_sum += test_case_count[key] || 0;
           return [Date.parse(key), test_case_sum];
         });
         var test_pass_sum = 0;
-        var test_pass_data = Object.keys(test_pass_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
-          test_pass_sum += test_pass_count[key];
+        var test_pass_data = unique_sorted_dates.map(function(key) {
+          test_pass_sum += test_pass_count[key] || 0;
           return [Date.parse(key), test_pass_sum];
         });
 
