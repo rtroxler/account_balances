@@ -144,21 +144,20 @@
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
 
-        var use_case_sum = 0
-        var use_case_data = Object.keys(use_case_count).filter(Boolean).sort(function(a,b){
-          return new Date(b) - new Date(a);
-        }).map(function(key) {
-          return [Date.parse(key), use_case_count[key]];
+        var use_case_sum = 0;
+        var use_case_data = Object.keys(use_case_count).filter(Boolean).sort(function(a,b){ return new Date(b) - new Date(a); }).map(function(key) {
+          use_case_sum += use_case_count[key];
+          return [Date.parse(key), use_case_sum];
         });
-        var test_case_data = Object.keys(test_case_count).filter(Boolean).sort(function(a,b){
-          return new Date(b) - new Date(a);
-        }).map(function(key) {
-          return [Date.parse(key), test_case_count[key]];
+        var test_case_sum = 0;
+        var test_case_data = Object.keys(test_case_count).filter(Boolean).sort(function(a,b){ return new Date(b) - new Date(a); }).map(function(key) {
+          test_case_sum += test_case_count[key];
+          return [Date.parse(key), test_case_sum];
         });
-        var test_pass_data = Object.keys(test_pass_count).filter(Boolean).sort(function(a,b){
-          return new Date(b) - new Date(a);
-        }).map(function(key) {
-          return [Date.parse(key), test_pass_count[key]];
+        var test_pass_sum = 0;
+        var test_pass_data = Object.keys(test_pass_count).filter(Boolean).sort(function(a,b){ return new Date(b) - new Date(a); }).map(function(key) {
+          test_pass_sum += test_pass_count[key];
+          return [Date.parse(key), test_pass_sum];
         });
         debugger;
 
