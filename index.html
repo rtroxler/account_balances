@@ -124,15 +124,17 @@
         var use_case_percent = entries[0]['gsx$percent']['$t']
         $("#use-cases").text(use_cases);
         $("#use-case-percent").text(use_case_percent);
+
         var test_cases = entries[1]['gsx$count']['$t']
         var test_case_percent = entries[1]['gsx$percent']['$t']
         $("#test-cases").text(test_cases);
         $("#test-case-percent").text(test_case_percent);
+
         var tests_passing = entries[2]['gsx$count']['$t']
         var tests_pass_percent = entries[2]['gsx$percent']['$t']
         $("#tests-passing").text(tests_passing);
         $("#test-pass-percent").text(tests_pass_percent);
-        debugger;
+
         var total = entries[3]['gsx$count']['$t']
         $("#total").text(total);
 
@@ -151,6 +153,7 @@
         }
 
         var dates = Object.keys(use_case_count) + Object.keys(test_case_count) + Object.keys(test_pass_count);
+        debugger;
         unique_sorted_dates = dates.filter(Boolean).filter(function(x, i, a) { return a.indexOf(x) == i }).sort(function(a,b){ return new Date(a) - new Date(b); });
 
         // Sum them up
