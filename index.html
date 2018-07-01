@@ -159,7 +159,6 @@
           test_pass_sum += test_pass_count[key];
           return [Date.parse(key), test_pass_sum];
         });
-        debugger;
 
         Highcharts.chart('chartContainer', {
             chart: {
@@ -202,9 +201,6 @@
 
             colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
 
-            // Define the data points. All series have a dummy year
-            // of 1970/71 in order to be compared on the same x axis. Note
-            // that in JavaScript, months start at 0 for January, 1 for February etc.
             series: [{
                 name: "Use Cases Written",
                 data: use_case_data,
