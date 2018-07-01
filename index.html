@@ -151,7 +151,9 @@
           return [Date.parse(key), test_case_count[key]];
         });
         var test_pass_data = Object.keys(test_pass_count).map(function(key) {
-          return [Date.parse(key), test_pass_count[key]];
+          if (key != "") {
+            return [Date.parse(key), test_pass_count[key]];
+          }
         });
         debugger;
 
