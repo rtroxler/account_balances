@@ -152,6 +152,7 @@
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
 
+        debugger;
         var dates = Object.keys(use_case_count) + Object.keys(test_case_count) + Object.keys(test_pass_count);
         debugger;
         unique_sorted_dates = dates.filter(Boolean).filter(function(x, i, a) { return a.indexOf(x) == i }).sort(function(a,b){ return new Date(a) - new Date(b); });
