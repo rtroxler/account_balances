@@ -120,7 +120,7 @@
       test_pass_count = {};
       $.getJSON("https://spreadsheets.google.com/feeds/list/1Udy2fXDDuDAca6xIijNxxxZf0RjvlovmNO0azqnAl8o/od6/public/values?alt=json", function(data) {
         var entries = data.feed.entry;
-        console.log(entries);
+        //console.log(entries);
 
         // Pull totals
         var use_cases = entries[0]['gsx$count']['$t']
@@ -145,19 +145,19 @@
         }
 
         var use_case_sum = 0;
-        var use_case_data = Object.keys(use_case_count).filter(Boolean).sort(function(a,b){ return new Date(b) - new Date(a); }).map(function(key) {
+        var use_case_data = Object.keys(use_case_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
           use_case_sum += use_case_count[key];
         console.log('use case sum' + use_case_sum);
           return [Date.parse(key), use_case_sum];
         });
         var test_case_sum = 0;
-        var test_case_data = Object.keys(test_case_count).filter(Boolean).sort(function(a,b){ return new Date(b) - new Date(a); }).map(function(key) {
+        var test_case_data = Object.keys(test_case_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
           test_case_sum += test_case_count[key];
         console.log('test case sum' + test_case_sum);
           return [Date.parse(key), test_case_sum];
         });
         var test_pass_sum = 0;
-        var test_pass_data = Object.keys(test_pass_count).filter(Boolean).sort(function(a,b){ return new Date(b) - new Date(a); }).map(function(key) {
+        var test_pass_data = Object.keys(test_pass_count).filter(Boolean).sort(function(a,b){ return new Date(a) - new Date(b); }).map(function(key) {
           test_pass_sum += test_pass_count[key];
         console.log('test pass sum' + test_pass_sum);
           return [Date.parse(key), test_pass_sum];
