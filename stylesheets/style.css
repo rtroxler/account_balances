@@ -110,7 +110,7 @@ a, a:hover, a:focus {
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #fff;
-    background: #2572cc;
+    background: #4886cc;
 }
 ul ul a {
     font-size: 0.9em !important;
