@@ -144,15 +144,15 @@
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
 
-        var use_case_data = Object.keys(use_case_count).map(function(key) {
+        var use_case_data = Object.keys(use_case_count).filter(Boolean).map(function(key) {
           return [Date.parse(key), use_case_count[key]];
-        }).filter(Boolean);
-        var test_case_data = Object.keys(test_case_count).map(function(key) {
+        });
+        var test_case_data = Object.keys(test_case_count).filter(Boolean).map(function(key) {
           return [Date.parse(key), test_case_count[key]];
-        }).filter(Boolean);
-        var test_pass_data = Object.keys(test_pass_count).map(function(key) {
+        });
+        var test_pass_data = Object.keys(test_pass_count).filter(Boolean).map(function(key) {
           return [Date.parse(key), test_pass_count[key]];
-        }).filter(Boolean);
+        });
         debugger;
 
         Highcharts.chart('chartContainer', {
