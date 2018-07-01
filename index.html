@@ -144,6 +144,15 @@
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
 
+        var use_case_data = Object.keys(use_case_count).map(function(key) {
+          return [Date.parse(key), use_case_count[key]];
+        });
+        var test_case_data = Object.keys(test_case_count).map(function(key) {
+          return [Date.parse(key), test_case_count[key]];
+        });
+        var test_pass_data = Object.keys(test_pass_count).map(function(key) {
+          return [Date.parse(key), test_pass_count[key]];
+        });
         debugger;
 
         Highcharts.chart('chartContainer', {
@@ -192,30 +201,13 @@
             // that in JavaScript, months start at 0 for January, 1 for February etc.
             series: [{
                 name: "Use Cases Written",
-                data: [
-                    [Date.UTC(1970, 10, 25), 0],
-                    [Date.UTC(1970, 11,  6), 0.25],
-                    [Date.UTC(1970, 11, 20), 1.41],
-                    [Date.UTC(1970, 11, 25), 1.64],
-                ]
+                data: use_case_data,
             }, {
                 name: "Test Cases Written",
-                data: [
-                    [Date.UTC(1970, 10,  9), 0],
-                    [Date.UTC(1970, 10, 15), 0.23],
-                    [Date.UTC(1970, 10, 20), 0.25],
-                    [Date.UTC(1970, 10, 25), 0.23],
-                    [Date.UTC(1970, 10, 30), 0.39],
-                    [Date.UTC(1970, 11,  5), 0.41],
-                ]
+                data: test_case_data,
             }, {
                 name: "Tests Passing",
-                data: [
-                    [Date.UTC(1970, 9, 15), 0],
-                    [Date.UTC(1970, 9, 31), 0.09],
-                    [Date.UTC(1970, 10,  7), 0.17],
-                    [Date.UTC(1970, 10, 10), 0.1],
-                ]
+                data: test_pass_data,
             }]
         });
 
