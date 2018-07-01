@@ -143,82 +143,83 @@
           test_pass_date = entries[i]['gsx$testcasepassing']['$t'];
           test_pass_count[test_pass_date] = test_pass_count[test_pass_date] ? test_pass_count[test_pass_date] + 1 : 1;
         }
-      });
 
-    debugger;
+        debugger;
 
-    Highcharts.chart('chartContainer', {
-        chart: {
-            type: 'spline'
-        },
-        title: {
-            text: 'Progression of Use Cases'
-        },
-        subtitle: {
-            text: ''
-        },
-        xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: { // don't display the dummy year
-                month: '%e. %b',
-                year: '%b'
+        Highcharts.chart('chartContainer', {
+            chart: {
+                type: 'spline'
             },
             title: {
-                text: 'Date'
-            }
-        },
-        yAxis: {
-            title: {
-                text: 'Number completed'
+                text: 'Progression of Use Cases'
             },
-            min: 0
-        },
-        tooltip: {
-            headerFormat: '<b>{series.name}</b><br>',
-            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-        },
-
-        plotOptions: {
-            spline: {
-                marker: {
-                    enabled: true
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                },
+                title: {
+                    text: 'Date'
                 }
-            }
-        },
+            },
+            yAxis: {
+                title: {
+                    text: 'Number completed'
+                },
+                min: 0
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br>',
+                pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+            },
 
-        colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+            plotOptions: {
+                spline: {
+                    marker: {
+                        enabled: true
+                    }
+                }
+            },
 
-        // Define the data points. All series have a dummy year
-        // of 1970/71 in order to be compared on the same x axis. Note
-        // that in JavaScript, months start at 0 for January, 1 for February etc.
-        series: [{
-            name: "Use Cases Written",
-            data: [
-                [Date.UTC(1970, 10, 25), 0],
-                [Date.UTC(1970, 11,  6), 0.25],
-                [Date.UTC(1970, 11, 20), 1.41],
-                [Date.UTC(1970, 11, 25), 1.64],
-            ]
-        }, {
-            name: "Test Cases Written",
-            data: [
-                [Date.UTC(1970, 10,  9), 0],
-                [Date.UTC(1970, 10, 15), 0.23],
-                [Date.UTC(1970, 10, 20), 0.25],
-                [Date.UTC(1970, 10, 25), 0.23],
-                [Date.UTC(1970, 10, 30), 0.39],
-                [Date.UTC(1970, 11,  5), 0.41],
-            ]
-        }, {
-            name: "Tests Passing",
-            data: [
-                [Date.UTC(1970, 9, 15), 0],
-                [Date.UTC(1970, 9, 31), 0.09],
-                [Date.UTC(1970, 10,  7), 0.17],
-                [Date.UTC(1970, 10, 10), 0.1],
-            ]
-        }]
-    });
+            colors: ['#6CF', '#39F', '#06C', '#036', '#000'],
+
+            // Define the data points. All series have a dummy year
+            // of 1970/71 in order to be compared on the same x axis. Note
+            // that in JavaScript, months start at 0 for January, 1 for February etc.
+            series: [{
+                name: "Use Cases Written",
+                data: [
+                    [Date.UTC(1970, 10, 25), 0],
+                    [Date.UTC(1970, 11,  6), 0.25],
+                    [Date.UTC(1970, 11, 20), 1.41],
+                    [Date.UTC(1970, 11, 25), 1.64],
+                ]
+            }, {
+                name: "Test Cases Written",
+                data: [
+                    [Date.UTC(1970, 10,  9), 0],
+                    [Date.UTC(1970, 10, 15), 0.23],
+                    [Date.UTC(1970, 10, 20), 0.25],
+                    [Date.UTC(1970, 10, 25), 0.23],
+                    [Date.UTC(1970, 10, 30), 0.39],
+                    [Date.UTC(1970, 11,  5), 0.41],
+                ]
+            }, {
+                name: "Tests Passing",
+                data: [
+                    [Date.UTC(1970, 9, 15), 0],
+                    [Date.UTC(1970, 9, 31), 0.09],
+                    [Date.UTC(1970, 10,  7), 0.17],
+                    [Date.UTC(1970, 10, 10), 0.1],
+                ]
+            }]
+        });
+
+      });
 
   })();
   </script>
